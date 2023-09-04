@@ -1,4 +1,4 @@
-package com.example.notesapplofcoding
+package com.example.notesapplofcoding.ui.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,6 +8,8 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.example.notesapplofcoding.MainActivity
+import com.example.notesapplofcoding.R
 import com.example.notesapplofcoding.databinding.FragmentNoteBinding
 import com.example.notesapplofcoding.model.Note
 import com.example.notesapplofcoding.viewmodel.NoteViewModel

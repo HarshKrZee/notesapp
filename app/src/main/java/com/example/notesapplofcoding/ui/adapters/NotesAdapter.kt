@@ -1,4 +1,4 @@
-package com.example.notesapplofcoding
+package com.example.notesapplofcoding.ui.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

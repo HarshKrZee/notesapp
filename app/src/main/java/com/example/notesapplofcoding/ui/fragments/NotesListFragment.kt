@@ -1,18 +1,18 @@
-package com.example.notesapplofcoding
+package com.example.notesapplofcoding.ui.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.notesapplofcoding.MainActivity
+import com.example.notesapplofcoding.R
 import com.example.notesapplofcoding.databinding.FragmentNotesListBinding
+import com.example.notesapplofcoding.ui.adapters.NotesAdapter
 import com.example.notesapplofcoding.viewmodel.NoteViewModel
 
 
@@ -42,6 +42,18 @@ class NotesListFragment : Fragment(R.layout.fragment_notes_list) {
 
         setupRecyclerView()
 
+//        viewModel.getPostLiveData().observe(viewLifecycleOwner ){
+//            Log.d("APIReponse222",it.toString())
+//        }
+
+//        viewModel.getPost()
+
+//        viewModel.getPostLiveData().observe(viewLifecycleOwner ){
+//            Log.d("APIReponse",it.toString())
+//        }
+//
+//        viewModel.getPost()
+
 //        Toast.makeText(context,"xvjhjkhhigighgjhgjgjgjgjgygygyggyz", Toast.LENGTH_SHORT).show()
 
         lifecycleScope.launchWhenStarted {
@@ -62,6 +74,10 @@ class NotesListFragment : Fragment(R.layout.fragment_notes_list) {
 
         binding.btnAddNote.setOnClickListener{
             findNavController().navigate(R.id.action_notesListFragment_to_noteFragment)
+        }
+
+        binding.btnPost.setOnClickListener{
+            findNavController().navigate(R.id.action_notesListFragment_to_postsListFragment)
         }
 
         notesAdapter.onClick = {note ->
