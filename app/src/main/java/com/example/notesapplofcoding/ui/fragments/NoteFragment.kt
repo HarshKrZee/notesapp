@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.notesapplofcoding.MainActivity
@@ -13,16 +14,19 @@ import com.example.notesapplofcoding.R
 import com.example.notesapplofcoding.databinding.FragmentNoteBinding
 import com.example.notesapplofcoding.model.Note
 import com.example.notesapplofcoding.viewmodel.NoteViewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 class NoteFragment : Fragment(R.layout.fragment_note) {
     private lateinit var binding: FragmentNoteBinding
     val args by navArgs<NoteFragmentArgs>()
-    private lateinit var viewModel : NoteViewModel
+
+    // this activityViewModel() help to share the same instance of viewmodel in activity file
+    private val noteviewModel: NoteViewModel by activityViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel = (activity as MainActivity).viewModel
+//        viewModel = (activity as MainActivity).viewModel
 
     }
 
@@ -60,7 +64,7 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
                         return@setOnClickListener
                     }
 
-                    viewModel.upsertNote(note)
+                    noteviewModel.upsertNote(note)
                     Toast.makeText(context,"Note Added !",Toast.LENGTH_SHORT).show()
                     findNavController().navigateUp()
                 }
@@ -74,7 +78,7 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
                 val noteText = args.note!!.noteText
 
                 Note(noteId,noteTitle,noteText).also{
-                    viewModel.deleteNote(it)
+                    noteviewModel.deleteNote(it)
                     findNavController().navigateUp()
                 }
             }

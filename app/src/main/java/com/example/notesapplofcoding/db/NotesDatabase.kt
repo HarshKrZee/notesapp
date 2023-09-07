@@ -8,6 +8,7 @@ import com.example.notesapplofcoding.model.Note
 @Database(entities = [Note :: class],version = 1)
 abstract class NotesDatabase : RoomDatabase(){
 
-    abstract val noteDao : NoteDao
+    abstract fun noteDao() : NoteDao
+
 
 }

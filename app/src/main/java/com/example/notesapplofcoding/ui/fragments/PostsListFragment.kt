@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.notesapplofcoding.MainActivity
@@ -13,17 +14,20 @@ import com.example.notesapplofcoding.R
 import com.example.notesapplofcoding.databinding.FragmentPostsListBinding
 import com.example.notesapplofcoding.ui.adapters.PostsAdapter
 import com.example.notesapplofcoding.viewmodel.NoteViewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 
 class PostsListFragment : Fragment(R.layout.fragment_posts_list) {
     private lateinit var binding: FragmentPostsListBinding
     private lateinit var postsAdapter: PostsAdapter
-    private lateinit var viewModel: NoteViewModel
+
+    // this activityViewModel() help to share the same instance of viewmodel in activity file
+    private val noteviewModel: NoteViewModel by activityViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel = (activity as MainActivity).viewModel
+//        viewModel = (activity as MainActivity).viewModel
     }
 
     override fun onCreateView(
@@ -44,12 +48,12 @@ class PostsListFragment : Fragment(R.layout.fragment_posts_list) {
 //            postsAdapter.differ.submitList(it)
 //        }
 
-        viewModel.getPost()
+        noteviewModel.getPost()
 
 
         lifecycleScope.launchWhenStarted {
             Log.d("posts" , "api fetching with flows successful !")
-            viewModel.post.collect{noteList ->
+            noteviewModel.post.collect{noteList ->
                 postsAdapter.differ.submitList(noteList)
             }
         }

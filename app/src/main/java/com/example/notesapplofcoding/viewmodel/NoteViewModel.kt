@@ -1,5 +1,6 @@
 package com.example.notesapplofcoding.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,14 +9,11 @@ import com.example.notesapplofcoding.model.Note
 import com.example.notesapplofcoding.model.Post
 import com.example.notesapplofcoding.repository.NoteRepository
 import com.example.notesapplofcoding.repository.PostRepository
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class NoteViewModel @Inject constructor(
+class NoteViewModel(
     val noteRepository: NoteRepository,
     val postRepository: PostRepository
 ) : ViewModel() {
@@ -24,14 +22,21 @@ class NoteViewModel @Inject constructor(
     private val _searchNotes = MutableStateFlow<List<Note>>(emptyList())
     val searchNotes: StateFlow<List<Note>> = _searchNotes
 
-    private val _post  = MutableStateFlow<List<Post>>(emptyList())
-    val post  : StateFlow<List<Post>> = _post
+    private val _post = MutableStateFlow<List<Post>>(emptyList())
+    val post: StateFlow<List<Post>> = _post
 
 //    fun getPostLiveData() : LiveData<List<Post>> = post
 
     fun getPost() = viewModelScope.launch {
-        val posts =   postRepository.getPost()
-        _post.emit(posts)
+        try {
+
+            val posts = postRepository.getPost()
+            _post.emit(posts)
+            Log.d("apiResponse", posts.toString())
+
+        } catch (e: Exception) {
+            Log.d("error in apiFetching", "${e.message}")
+        }
     }
 
     fun upsertNote(note: Note) = viewModelScope.launch { noteRepository.upsertNote(note) }

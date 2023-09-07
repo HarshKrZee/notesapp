@@ -5,4 +5,4 @@ data class   Post(
     val it : Int,
     val title: String,
     val userId: Int
-)
+) 

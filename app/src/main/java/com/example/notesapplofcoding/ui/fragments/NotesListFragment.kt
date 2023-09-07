@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,17 +15,20 @@ import com.example.notesapplofcoding.R
 import com.example.notesapplofcoding.databinding.FragmentNotesListBinding
 import com.example.notesapplofcoding.ui.adapters.NotesAdapter
 import com.example.notesapplofcoding.viewmodel.NoteViewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 
 class NotesListFragment : Fragment(R.layout.fragment_notes_list) {
     private lateinit var binding: FragmentNotesListBinding
     private lateinit var notesAdapter: NotesAdapter
-    private lateinit var viewModel: NoteViewModel
+
+    // this activityViewModel() help to share the same instance of viewmodel in activity file
+    private val noteviewModel: NoteViewModel by activityViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel = (activity as MainActivity).viewModel
+//        viewModel = (activity as MainActivity).viewModel
 
     }
 
@@ -57,19 +61,19 @@ class NotesListFragment : Fragment(R.layout.fragment_notes_list) {
 //        Toast.makeText(context,"xvjhjkhhigighgjhgjgjgjgjgygygyggyz", Toast.LENGTH_SHORT).show()
 
         lifecycleScope.launchWhenStarted {
-            viewModel.notes.collect{noteList ->
+            noteviewModel.notes.collect{noteList ->
                 notesAdapter.differ.submitList(noteList)
             }
         }
 
         lifecycleScope.launchWhenStarted{
-            viewModel.searchNotes.collect{searchedNotes ->
+            noteviewModel.searchNotes.collect{searchedNotes ->
                 notesAdapter.differ.submitList(searchedNotes)
             }
         }
 
         binding.edSearch.addTextChangedListener {
-            viewModel.searchNotes(it.toString().trim())
+            noteviewModel.searchNotes(it.toString().trim())
         }
 
         binding.btnAddNote.setOnClickListener{
