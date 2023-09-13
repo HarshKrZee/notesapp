@@ -1,8 +1,6 @@
 package com.example.notesapplofcoding.viewmodel
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.notesapplofcoding.model.Note
@@ -18,18 +16,34 @@ class NoteViewModel(
     val postRepository: PostRepository
 ) : ViewModel() {
 
-    val notes = noteRepository.getNotes()
+    private val _messageFlow = MutableStateFlow<String>("")
+    val messageFlow: StateFlow<String> = _messageFlow
+
     private val _searchNotes = MutableStateFlow<List<Note>>(emptyList())
     val searchNotes: StateFlow<List<Note>> = _searchNotes
 
     private val _post = MutableStateFlow<List<Post>>(emptyList())
     val post: StateFlow<List<Post>> = _post
 
-//    fun getPostLiveData() : LiveData<List<Post>> = post
+
+    init {
+        getNotes()
+    }
+
+    fun setMessage(message: String) {
+        viewModelScope.launch { _messageFlow.emit(message) }
+    }
+
+    fun getNotes() {
+        viewModelScope.launch {
+            noteRepository.getNotes().collect {
+                _searchNotes.emit(it)    // here emit is just like postvalue
+            }
+        }
+    }
 
     fun getPost() = viewModelScope.launch {
         try {
-
             val posts = postRepository.getPost()
             _post.emit(posts)
             Log.d("apiResponse", posts.toString())
@@ -39,7 +53,14 @@ class NoteViewModel(
         }
     }
 
-    fun upsertNote(note: Note) = viewModelScope.launch { noteRepository.upsertNote(note) }
+    fun upsertNote(note: Note) = viewModelScope.launch {
+        if (isValid(note)) {
+            noteRepository.upsertNote(note)
+        } else {
+            _messageFlow.emit("Title and Text can't be empty")
+            Log.d("fdasf", _messageFlow.value)
+        }
+    }
 
     fun deleteNote(note: Note) = viewModelScope.launch { noteRepository.deleteNote(note) }
 
@@ -51,4 +72,12 @@ class NoteViewModel(
                 _searchNotes.emit(it)    // here emit is just like postvalue
             }
         }
+
+    private fun isValid(note: Note): Boolean {
+        return when {
+            note.noteTitle.isBlank() -> false // Title must not be empty
+            note.noteText.isBlank() -> false // Text must not be empty
+            else -> true
+        }
+    }
 }

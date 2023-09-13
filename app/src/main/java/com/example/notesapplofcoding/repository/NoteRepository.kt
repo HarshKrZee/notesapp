@@ -3,7 +3,7 @@ package com.example.notesapplofcoding.repository
 import com.example.notesapplofcoding.db.NoteDao
 import com.example.notesapplofcoding.model.Note
 
-class NoteRepository (val noteDao : NoteDao) {
+class NoteRepository (private val noteDao : NoteDao) {
 
     suspend fun upsertNote(note : Note) = noteDao.upsertNote(note)
 

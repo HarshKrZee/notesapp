@@ -11,5 +11,5 @@ val viewModelModule = module {
     factory { NoteRepository(get()) }
     factory { PostRepository(get()) }
 
-    viewModel { NoteViewModel(get(),get()) }
+    viewModel { NoteViewModel(get(), get()) }
 }
