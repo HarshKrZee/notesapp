@@ -1,6 +1,7 @@
 package com.example.notesapplofcoding.screens
 
 import android.annotation.SuppressLint
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.notesapplofcoding.model.Post
@@ -31,8 +33,14 @@ import com.example.notesapplofcoding.viewmodel.NoteViewModel
 fun PostsScreen(noteViewModel: NoteViewModel, navController: NavController) {
 
     val posts = noteViewModel.post.collectAsState(listOf())
+    val message =  noteViewModel.messageFlow.collectAsState()
+    val context = LocalContext.current
 
     Column {
+        if (message.value != "") {
+            Toast.makeText(context, message.value, Toast.LENGTH_SHORT).show()
+            noteViewModel.setMessage("")
+        }
         PostItems(
             posts.value, navController
         )

@@ -59,29 +59,21 @@ fun Detail(
     val message =  noteViewModel.messageFlow.collectAsState()
     val context = LocalContext.current
 
-    LaunchedEffect(message) {
-        if (message.value != "") {
-            // Show a toast when the message changes
-            Toast.makeText(context, message.value, Toast.LENGTH_SHORT).show()
-            // Optionally, reset the message to null after showing the toast
-            noteViewModel.setMessage("")
-        }
-    }
-
     Scaffold(floatingActionButton = {
         SaveButton() {
             noteViewModel.upsertNote(Note(id, title.value, text.value))
             navController.navigate("notes")
-            Log.d("title1", "${title.value}")
         }
     }) {
         Column {
+            if (message.value != "") {
+                Toast.makeText(context, message.value, Toast.LENGTH_SHORT).show()
+                noteViewModel.setMessage("")
+            }
             DetailItem(title.value, "title") { str: String ->
-                Log.d("title1", "${title.value}")
                 title.value = str
             }
             DetailItem(text.value, "text") { str: String ->
-                Log.d("title2", "${text.value}")
                 text.value = str
             }
         }

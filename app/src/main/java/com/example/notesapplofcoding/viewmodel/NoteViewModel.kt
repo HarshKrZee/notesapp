@@ -12,8 +12,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class NoteViewModel(
-    val noteRepository: NoteRepository,
-    val postRepository: PostRepository
+    private val noteRepository: NoteRepository,
+    private val postRepository: PostRepository
 ) : ViewModel() {
 
     private val _messageFlow = MutableStateFlow<String>("")
@@ -37,7 +37,7 @@ class NoteViewModel(
     fun getNotes() {
         viewModelScope.launch {
             noteRepository.getNotes().collect {
-                _searchNotes.emit(it)    // here emit is just like postvalue
+                _searchNotes.emit(it)
             }
         }
     }
@@ -46,10 +46,9 @@ class NoteViewModel(
         try {
             val posts = postRepository.getPost()
             _post.emit(posts)
-            Log.d("apiResponse", posts.toString())
 
         } catch (e: Exception) {
-            Log.d("error in apiFetching", "${e.message}")
+            _messageFlow.emit("Something went wrong !")
         }
     }
 
@@ -58,7 +57,6 @@ class NoteViewModel(
             noteRepository.upsertNote(note)
         } else {
             _messageFlow.emit("Title and Text can't be empty")
-            Log.d("fdasf", _messageFlow.value)
         }
     }
 
@@ -69,14 +67,14 @@ class NoteViewModel(
     fun searchNotes(searchQuery: String) =
         viewModelScope.launch {
             noteRepository.searchNotes(searchQuery).collect {
-                _searchNotes.emit(it)    // here emit is just like postvalue
+                _searchNotes.emit(it)
             }
         }
 
     private fun isValid(note: Note): Boolean {
         return when {
-            note.noteTitle.isBlank() -> false // Title must not be empty
-            note.noteText.isBlank() -> false // Text must not be empty
+            note.noteTitle.isBlank() -> false
+            note.noteText.isBlank() -> false
             else -> true
         }
     }
